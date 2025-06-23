@@ -1,57 +1,38 @@
+import http from 'http';
+import { logger } from './src/middlewares/logger.js';
+import { parseQuery } from './src/middlewares/parseQuery.js';
+import { usersRouter } from './src/routes/userRoutes.js';
+import { loadData } from './src/storage.js';
+import { productsRouter } from './src/routes/productRoutes.js';
 
-const http = require('http');
 const PORT = 3000;
 
-function logEvents (req , res, next) {
-    const dateTime = new Date();
-    const fecha = dateTime.toLocaleDateString();
-    const tiempo = dateTime.toLocaleTimeString();
-    console.log(`${fecha}-${tiempo} | Solicitud a: ${req.url}`);
-    next();
-}
-
-function validarNombre (req, res, next) {
-    const url = new URL(req.url, `http://${req.headers.host}`);
-    const nombre = url.searchParams.get('name');
-    if (!nombre) {
-       res.statusCode = 400;
-       return res.end('Falta el parametro "name"');
-    }
-    req.nombre = nombre;
-    next();
-}
-
-function isAdmin (req, res, next) {
-    const url = new URL(req.url, `http://${req.headers.host}`);
-    const isAdmin = url.searchParams.get('admin');
-    if (!isAdmin) {
-        res.statusCode = 400;
-        return res.end('Falta el parametro "admin"');
-    }
-    req.isAdmin = (isAdmin === 'true') ? 'true' : 'false';
-    next();
-    
-}
+await loadData();
 
 const server = http.createServer((req, res) => {
-    logEvents(req, res, () => {
-        validarNombre(req, res, () => {
-            isAdmin (req, res, () => {
-            if (req.url.startsWith('/?')) {
-                if (req.isAdmin === 'true') {
-                    res.end(`Welcome Admin ` + req.nombre);
-                } else {
-                    res.end(`Welcome ` + req.nombre);
-                }
-            } else {
-                res.end('404');
-            }
-            });
-        });
+  logger(req, res, () => {
+    parseQuery(req, res, () => {
+      const { pathname, method, query } = req;
+
+      if (pathname === '/' && method === 'GET') {
+        if (query.name && query.admin === 'true') {
+          return res.end(`Welcome Admin ${query.name} to your API`);
+        }
+        if (query.name) {
+          return res.end(`Welcome ${query.name}`);
+        }
+        return res.end('Welcome! Agrega ?name=tu_nombre');
+      }
+
+      if (usersRouter(req, res) !== false) return;
+      if (productsRouter(req, res) !== false) return;
+
+      res.writeHead(404, { 'Content-Type': 'text/plain' });
+      res.end('Ruta no encontrada');
     });
-    
+  });
 });
 
 server.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Servidor escuchando en http://localhost:${PORT}`);
 });
