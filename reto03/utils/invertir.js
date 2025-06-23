@@ -8,7 +8,12 @@ function invertirTexto(req, res, next) {
         textoInvertido = texto.split('').reverse().join('');
         req.textoInvertido = textoInvertido;
         req.texto = texto;
-    }
+        if (textoInvertido === texto) {
+            req.palindromo = true;
+        } else {
+            req.palindromo = false;
+        }
+    } 
     next();
 
 }
