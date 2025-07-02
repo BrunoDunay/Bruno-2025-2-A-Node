@@ -1,4 +1,3 @@
-
 const http = require('http');
 const invertirTexto = require('./utils/invertir');
 const PORT = 3000;
@@ -9,9 +8,7 @@ const server = http.createServer((req, res) => {
             res.writeHead(200, { 'Content-Type': 'text/html' });
             if (req.palindromo) {
                 res.write('<h2>El texto es un palindromo</h2>');
-            } else {
-                res.write('<h2>El texto no es un palindromo</h2>');
-            }
+            } 
             res.end(`<h2>Texto original: ${req.texto}</h2> 
                     <h2>Texto invertido: ${req.textoInvertido}</h2>`);
                     
