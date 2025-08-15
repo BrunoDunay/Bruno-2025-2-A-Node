@@ -1,4 +1,3 @@
-
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
@@ -20,6 +19,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     enum: ['admin', 'customer', 'guest'],
+    default: 'guest',
   },
   avatar: {
     type: String,
@@ -37,6 +37,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-const User = mongoose.model('User', userSchema);
+// ✅ Usar el modelo ya definido si existe para evitar el OverwriteModelError
+const User = mongoose.models.User || mongoose.model('User', userSchema);
 
 export default User;

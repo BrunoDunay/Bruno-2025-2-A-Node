@@ -1,4 +1,3 @@
-
 import express from 'express';
 import {
   getPaymentMethods,
@@ -11,34 +10,36 @@ import {
   deletePaymentMethod,
   getDefaultPaymentMethod,
 } from '../controllers/paymentMethodController.js';
+import isAdmin from '../middlewares/isAdminMiddleware.js';
+import authMiddleware from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
 // Obtener todos los métodos de pago activos (admin)
-router.get('/payment-methods', getPaymentMethods);
+router.get('/', authMiddleware, isAdmin, getPaymentMethods);
 
 // Obtener método de pago predeterminado de un usuario
-router.get('/payment-methods/default/:userId', getDefaultPaymentMethod);
+router.get('/default/:userId', authMiddleware, getDefaultPaymentMethod);
 
 // Obtener métodos de pago de un usuario
-router.get('/payment-methods/user/:userId', getPaymentMethodsByUser);
+router.get('/user/:userId', authMiddleware, getPaymentMethodsByUser);
 
 // Obtener método de pago por ID
-router.get('/payment-methods/:id', getPaymentMethodById);
+router.get('/:id', authMiddleware, getPaymentMethodById);
 
 // Crear nuevo método de pago
-router.post('/payment-methods', createPaymentMethod);
+router.post('/', authMiddleware, createPaymentMethod);
 
 // Establecer método de pago como predeterminado
-router.patch('/payment-methods/:id/set-default', setDefaultPaymentMethod);
+router.patch('/:id/set-default', authMiddleware, setDefaultPaymentMethod);
 
 // Desactivar método de pago
-router.patch('/payment-methods/:id/deactivate', deactivatePaymentMethod);
+router.patch('/:id/deactivate', authMiddleware, deactivatePaymentMethod);
 
 // Actualizar método de pago
-router.put('/payment-methods/:id', updatePaymentMethod);
+router.put('/:id', authMiddleware, updatePaymentMethod);
 
 // Eliminar método de pago permanentemente
-router.delete('/payment-methods/:id', deletePaymentMethod);
+router.delete('/:id', authMiddleware, deletePaymentMethod);
 
 export default router;

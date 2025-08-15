@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import routes from './src/routes/index.js';
 import dbConnection from './src/config/database.js';
 import logger from './src/middlewares/logger.js';
+import errorHandler from './src/middlewares/errorHandler.js';
 
 dotenv.config();
 
@@ -17,6 +18,16 @@ app.get("/", (req, res) => {
 });
 
 app.use('/api', routes);
+
+app.use((req, res) => {
+  res.status(404).json({ 
+    error: 'Route not Found',
+    method: req.method,
+    url: req.originalUrl
+  });
+});
+
+app.use(errorHandler);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on http://localhost:${process.env.PORT}`);

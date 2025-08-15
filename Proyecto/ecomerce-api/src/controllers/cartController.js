@@ -1,13 +1,35 @@
 import Cart from '../models/cart.js';
 
-async function getCarts(req, res) {
+async function getCarts(req, res, next) {
   try {
-    const carts = await Cart.find().populate('user').populate('products.product');
-    res.json(carts);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const carts = await Cart.find()
+      .populate('user')
+      .populate('products.product')
+      .skip(skip)
+      .limit(limit);
+
+    const totalResults = await Cart.countDocuments();
+    const totalPages = Math.ceil(totalResults / limit);
+
+    res.json({
+      carts,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalResults,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
+      }
+    });
   } catch (error) {
-    res.status(500).send({ error });
+    next(error);
   }
 }
+
 
 async function getCartById(req, res) {
   try {
@@ -18,7 +40,7 @@ async function getCartById(req, res) {
     }
     res.json(cart);
   } catch (error) {
-    res.status(500).send({ error });
+    next(error);
   }
 }
 
@@ -31,7 +53,7 @@ async function getCartByUser(req, res) {
     }
     res.json(cart);
   } catch (error) {
-    res.status(500).send({ error });
+    next(error);
   }
 }
 
@@ -59,7 +81,7 @@ async function createCart(req, res) {
 
     res.status(201).json(newCart);
   } catch (error) {
-    res.status(500).send({ error });
+    next(error);
   }
 }
 
@@ -89,7 +111,7 @@ async function updateCart(req, res) {
       return res.status(404).json({ message: 'Cart not found' });
     }
   } catch (error) {
-    res.status(500).send({ error });
+    next(error);
   }
 }
 
@@ -104,7 +126,7 @@ async function deleteCart(req, res) {
       return res.status(404).json({ message: 'Cart not found' });
     }
   } catch (error) {
-    res.status(500).json({ error });
+    next(error);
   }
 }
 
@@ -146,7 +168,7 @@ async function addProductToCart(req, res) {
 
     res.status(200).json(cart);
   } catch (error) {
-    res.status(500).send({ error });
+    next(error);
   }
 }
 

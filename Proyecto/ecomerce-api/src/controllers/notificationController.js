@@ -1,16 +1,16 @@
-
 import Notification from '../models/notification.js';
+import errorHandler from '../middlewares/errorHandler.js';
 
-async function getNotifications(req, res) {
+async function getNotifications(req, res, next) {
   try {
     const notifications = await Notification.find().populate('user').sort({ message: 1 });
     res.json(notifications);
   } catch (error) {
-    res.status(500).send({ error });
+    next(error);
   }
 }
 
-async function getNotificationById(req, res) {
+async function getNotificationById(req, res, next) {
   try {
     const id = req.params.id;
     const notification = await Notification.findById(id).populate('user');
@@ -19,11 +19,11 @@ async function getNotificationById(req, res) {
     }
     res.json(notification);
   } catch (error) {
-    res.status(500).send({ error });
+    next(error);
   }
 }
 
-async function getNotificationByUser(req, res) {
+async function getNotificationByUser(req, res, next) {
   try {
     const userId = req.params.userId;
     const notifications = await Notification.find({ user: userId }).populate('user').sort({ message: 1 });
@@ -32,11 +32,11 @@ async function getNotificationByUser(req, res) {
     }
     res.json(notifications);
   } catch (error) {
-    res.status(500).send({ error });
+    next(error);
   }
 }
 
-async function createNotification(req, res) {
+async function createNotification(req, res, next) {
   try {
     const { user, message } = req.body;
     if (!user || !message) {
@@ -51,11 +51,11 @@ async function createNotification(req, res) {
     await newNotification.populate('user');
     res.status(201).json(newNotification);
   } catch (error) {
-    res.status(500).send({ error });
+    next(error);
   }
 }
 
-async function updateNotification(req, res) {
+async function updateNotification(req, res, next) {
   try {
     const { id } = req.params;
     const { message, isRead } = req.body;
@@ -71,11 +71,11 @@ async function updateNotification(req, res) {
       return res.status(404).json({ message: 'Notification not found' });
     }
   } catch (error) {
-    res.status(500).send({ error });
+    next(error);
   }
 }
 
-async function deleteNotification(req, res) {
+async function deleteNotification(req, res, next) {
   try {
     const { id } = req.params;
     const deletedNotification = await Notification.findByIdAndDelete(id);
@@ -86,11 +86,11 @@ async function deleteNotification(req, res) {
       return res.status(404).json({ message: 'Notification not found' });
     }
   } catch (error) {
-    res.status(500).json({ error });
+    next(error);
   }
 }
 
-async function markAsRead(req, res) {
+async function markAsRead(req, res, next) {
   try {
     const { id } = req.params;
     const notification = await Notification.findByIdAndUpdate(
@@ -105,11 +105,11 @@ async function markAsRead(req, res) {
       return res.status(404).json({ message: 'Notification not found' });
     }
   } catch (error) {
-    res.status(500).send({ error });
+    next(error);
   }
 }
 
-async function markAllAsReadByUser(req, res) {
+async function markAllAsReadByUser(req, res, next) {
   try {
     const { userId } = req.params;
     const result = await Notification.updateMany(
@@ -122,11 +122,11 @@ async function markAllAsReadByUser(req, res) {
       modifiedCount: result.modifiedCount
     });
   } catch (error) {
-    res.status(500).send({ error });
+    next(error);
   }
 }
 
-async function getUnreadNotificationsByUser(req, res) {
+async function getUnreadNotificationsByUser(req, res, next) {
   try {
     const userId = req.params.userId;
     const notifications = await Notification.find({
@@ -139,7 +139,7 @@ async function getUnreadNotificationsByUser(req, res) {
       notifications
     });
   } catch (error) {
-    res.status(500).send({ error });
+    next(error);
   }
 }
 

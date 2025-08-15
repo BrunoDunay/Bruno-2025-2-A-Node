@@ -1,4 +1,3 @@
-
 import express from 'express';
 import {
   getProducts,
@@ -8,14 +7,16 @@ import {
   updateProduct,
   deleteProduct,
 } from '../controllers/productController.js';
+import authMiddleware from '../middlewares/authMiddleware.js';
+import isAdmin from '../middlewares/isAdminMiddleware.js';
 
 const router = express.Router();
 
-router.get('/products', getProducts);
-router.get('/products/category/:idCategory', getProductByCategory);
-router.get('/products/:id', getProductById);
-router.post('/products', createProduct);
-router.put('/products/:id', updateProduct);
-router.delete('/products/:id', deleteProduct);
+router.get('/', getProducts);
+router.get('/category/:idCategory', getProductByCategory);
+router.get('/:id', getProductById);
+router.post('/', authMiddleware, isAdmin, createProduct);
+router.put('/:id', authMiddleware, isAdmin, updateProduct);
+router.delete('/:id', authMiddleware, isAdmin, deleteProduct);
 
 export default router;
