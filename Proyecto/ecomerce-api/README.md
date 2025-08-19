@@ -18,6 +18,7 @@ ecomerce-api/
 │   ├── models/            # Modelos de Mongoose
 │   ├── routes/            # Definición de endpoints
 │   ├── middlewares/       # Middlewares (auth, validaciones, errores)
+```
 
 ⚙️ Instalación y configuración
 1. Clonar el repositorio
