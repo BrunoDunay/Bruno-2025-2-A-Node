@@ -20,111 +20,114 @@ ecomerce-api/
 │   ├── middlewares/       # Middlewares (auth, validaciones, errores)
 ```
 
-⚙️ Instalación y configuración
+## ⚙️ Instalación y configuración
 1. Clonar el repositorio
-
+```bash
 git clone https://github.com/usuario/ecomerce-api.git
 cd ecomerce-api
+```
 
 2. Instalar dependencias
-
-npm install
+```bash
+-npm install
+```
 
 3. Configurar variables de entorno en .env
-
-PORT=4000
-MONGODB_URI=mongodb://localhost:27017/ecommerce
-JWT_SECRET=clave_secreta_segura
+```bash
+- PORT=4000
+- MONGODB_URI=mongodb://localhost:27017/ecommerce
+- JWT_SECRET=clave_secreta_segura
+```
 
 4. Iniciar el servidor
 npm run dev
 
 El servidor corre en http://localhost:3000
 
-🧩 Modelos principales
+## 🧩 Modelos principales
 
-Usuario → nombre, email, contraseña (bcrypt), rol (admin | cliente)
+- Usuario → nombre, email, contraseña (bcrypt), rol (admin | cliente)
 
-Producto → nombre, descripción, precio, categoría
+- Producto → nombre, descripción, precio, categoría
 
-Categoría → nombre, descripción
+- Categoría → nombre, descripción
 
-Carrito → usuario, lista de productos con cantidad
+- Carrito → usuario, lista de productos con cantidad
 
-Orden → usuario, productos, estado, dirección de envío, método de pago
+- Orden → usuario, productos, estado, dirección de envío, método de pago
 
-Otros → direcciones, reseñas, notificaciones, wishlist
+- Otros → direcciones, reseñas, notificaciones, wishlist
 
-🔑 Autenticación y roles
+## 🔑 Autenticación y roles
 
-Registro y login generan un JWT válido.
+- Registro y login generan un JWT válido.
 
-Endpoints protegidos requieren token en Headers:
+- Endpoints protegidos requieren token en Headers:
     Authorization: Bearer <token>
 
-Rol admin → CRUD de productos, listar usuarios
+- Rol admin → CRUD de productos, listar usuarios
 
-Rol cliente → ver productos, gestionar carrito, crear órdenes
+- Rol cliente → ver productos, gestionar carrito, crear órdenes
 
-🚀 Endpoints principales
-🔓 Públicos
+## 🚀 Endpoints principales
+### 🔓 Públicos
 
-POST /auth/register → Crear cuenta
+- POST /auth/register → Crear cuenta
 
-POST /auth/login → Iniciar sesión
+- POST /auth/login → Iniciar sesión
 
-GET /products → Listar productos (paginación: ?page=1&limit=10)
+- GET /products → Listar productos (paginación: ?page=1&limit=10)
 
-GET /categories → Listar categorías
+- GET /categories → Listar categorías
 
-🔐 Protegidos (requiere JWT)
+### 🔐 Protegidos (requiere JWT)
 
-POST /products (admin) → Crear producto
+- POST /products (admin) → Crear producto
 
-PUT /products/:id (admin) → Actualizar producto
+- PUT /products/:id (admin) → Actualizar producto
 
-DELETE /products/:id (admin) → Eliminar producto
+- DELETE /products/:id (admin) → Eliminar producto
 
-GET /users (admin) → Listar usuarios (con paginación)
+- GET /users (admin) → Listar usuarios (con paginación)
 
-POST /cart → Agregar producto al carrito
+- POST /cart → Agregar producto al carrito
 
-PUT /cart/:id → Actualizar cantidad
+- PUT /cart/:id → Actualizar cantidad
 
-DELETE /cart/:id → Eliminar producto del carrito
+- DELETE /cart/:id → Eliminar producto del carrito
 
-POST /orders → Crear orden
+- POST /orders → Crear orden
 
-GET /orders → Listar órdenes del usuario autenticado
+- GET /orders → Listar órdenes del usuario autenticado
 
-🛡️ Validaciones y seguridad
+## 🛡️ Validaciones y seguridad
 
-Uso de express-validator en endpoints clave (registro, productos, órdenes)
+- Uso de express-validator en endpoints clave (registro, productos, órdenes)
 
-Contraseñas encriptadas con bcrypt
+- Contraseñas encriptadas con bcrypt
 
-Manejo centralizado de errores con middlewares de error
+- Manejo centralizado de errores con middlewares de error
 
-Tokens JWT con expiración y validación de roles
+- Tokens JWT con expiración y validación de roles
 
-📊 Relaciones
+## 📊 Relaciones
 
-Producto ↔ Categoría → cada producto pertenece a una categoría
+- Producto ↔ Categoría → cada producto pertenece a una categoría
 
-Usuario ↔ Carrito → cada carrito pertenece a un usuario
+- Usuario ↔ Carrito → cada carrito pertenece a un usuario
 
-Usuario ↔ Orden → cada orden pertenece a un usuario
+- Usuario ↔ Orden → cada orden pertenece a un usuario
 
-Orden ↔ Productos → cada orden incluye múltiples productos
+- Orden ↔ Productos → cada orden incluye múltiples productos
 
-📌 Notas finales
+## 📌 Notas finales
 
-Proyecto desarrollado en Node.js + Express + MongoDB
+- Proyecto desarrollado en Node.js + Express + MongoDB
 
-JWT y roles implementados
+- JWT y roles implementados
 
-Paginación en productos y usuarios
+- Paginación en productos y usuarios
 
-Validaciones y middlewares centralizados
+- Validaciones y middlewares centralizados
 
-Código organizado en capas (MVC)
+- Código organizado en capas (MVC)
